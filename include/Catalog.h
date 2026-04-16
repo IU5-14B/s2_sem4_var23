@@ -1,0 +1,16 @@
+#ifndef CATALOG_H
+#define CATALOG_H
+
+#include <memory>
+#include <string>
+#include <vector>
+
+class MuseumItem;
+
+class Catalog {
+public:
+    MuseumItem* findByTitle(const std::vector<std::shared_ptr<MuseumItem>>& items,
+                           const std::string& neededTitle) const;
+};
+
+#endif
