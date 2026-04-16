@@ -1,8 +1,8 @@
 #include "Catalog.h"
 #include "MuseumItem.h"
 
-MuseumItem* Catalog::findByTitle(const std::vector<std::shared_ptr<MuseumItem>>& items,
-                                 const std::string& neededTitle) const {
+const MuseumItem* Catalog::findByTitle(const std::vector<std::shared_ptr<MuseumItem>>& items,
+                                       const std::string& neededTitle) const {
     for (const auto& item : items) {
         if (item->getTitle() == neededTitle) {
             return item.get();

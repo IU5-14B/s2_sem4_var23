@@ -4,7 +4,7 @@
 
 Guide::Guide(const std::string& name) : name(name) {}
 
-std::string Guide::getName() const {
+const std::string& Guide::getName() const {
     return name;
 }
 
@@ -15,9 +15,17 @@ void Guide::addToRoute(MuseumItem* item) {
 void Guide::showRoute() const {
     std::cout << "Маршрут гида " << name << ":\n";
 
+    if (route.empty()) {
+        std::cout << "  Маршрут пока не составлен.\n";
+        return;
+    }
+
+    int stopNumber = 1;
     for (const MuseumItem* item : route) {
+        std::cout << "Остановка " << stopNumber << ":\n";
         item->printInfo();
         std::cout << "  Рекомендуемое время осмотра: "
                   << item->getRecommendedVisitMinutes() << " мин.\n";
+        ++stopNumber;
     }
 }

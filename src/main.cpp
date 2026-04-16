@@ -6,46 +6,55 @@
 #include <clocale>
 #include <iostream>
 #include <memory>
+#include <string>
 #include <typeinfo>
 
 namespace {
 
-void showRuntimeType(const MuseumItem& item) {
-    std::cout << "typeid: ";
-
-    if (typeid(item) == typeid(Painting)) {
-        std::cout << "Painting";
-    } else if (typeid(item) == typeid(Sculpture)) {
-        std::cout << "Sculpture";
-    } else if (typeid(item) == typeid(Artifact)) {
-        std::cout << "Artifact";
-    } else {
-        std::cout << "Unknown";
-    }
-
-    std::cout << '\n';
+void printSection(const std::string& title) {
+    std::cout << "\n=== " << title << " ===\n";
 }
 
-void showSpecialDetails(MuseumItem* item) {
+void showItemThroughBaseInterface(const MuseumItem& item) {
+    item.printInfo();
+    std::cout << "Рекомендуемое время осмотра: "
+              << item.getRecommendedVisitMinutes() << " мин.\n";
+}
+
+void showRuntimeType(const MuseumItem& item) {
+    std::cout << "Результат typeid: ";
+
+    if (typeid(item) == typeid(Painting)) {
+        std::cout << "объект является картиной.\n";
+    } else if (typeid(item) == typeid(Sculpture)) {
+        std::cout << "объект является скульптурой.\n";
+    } else if (typeid(item) == typeid(Artifact)) {
+        std::cout << "объект является артефактом.\n";
+    } else {
+        std::cout << "тип объекта определить не удалось.\n";
+    }
+}
+
+void showSpecialDetails(const MuseumItem* item) {
     if (const Painting* painting = dynamic_cast<const Painting*>(item)) {
-        std::cout << "dynamic_cast: техника картины \"" << painting->getTitle()
-                  << "\" = " << painting->getTechnique() << '\n';
+        std::cout << "dynamic_cast дал доступ к специфичному полю картины: техника = "
+                  << painting->getTechnique() << ".\n";
         return;
     }
 
     if (const Sculpture* sculpture = dynamic_cast<const Sculpture*>(item)) {
-        std::cout << "dynamic_cast: материал скульптуры \"" << sculpture->getTitle()
-                  << "\" = " << sculpture->getMaterial() << '\n';
+        std::cout << "dynamic_cast дал доступ к специфичному полю скульптуры: материал = "
+                  << sculpture->getMaterial() << ".\n";
         return;
     }
 
     if (const Artifact* artifact = dynamic_cast<const Artifact*>(item)) {
-        std::cout << "dynamic_cast: эпоха артефакта \"" << artifact->getTitle()
-                  << "\" = " << artifact->getEpoch() << '\n';
+        std::cout << "dynamic_cast дал доступ к специфичному полю артефакта: эпоха = "
+                  << artifact->getEpoch() << ".\n";
         return;
     }
 
-    std::cout << "dynamic_cast: специальных данных для объекта нет\n";
+    std::cout << "dynamic_cast не выявил специальный тип объекта.\n";
 }
 
 }  // namespace
@@ -53,7 +62,7 @@ void showSpecialDetails(MuseumItem* item) {
 int main() {
     setlocale(LC_ALL, "");
 
-    Museum museum("Городской музей");
+    Museum museum("Городской историко-художественный музей");
 
     museum.addHall(1, "Русская живопись");
     museum.addHall(2, "Скульптура");
@@ -68,44 +77,71 @@ int main() {
     std::shared_ptr<MuseumItem> artifact = std::make_shared<Artifact>(
         "Шлем княжеского дружинника", 1200, "Древняя Русь", 3, "XIII век"
     );
+    std::shared_ptr<MuseumItem> secondPainting = std::make_shared<Painting>(
+        "Над вечным покоем", 1894, "Исаак Левитан", 1, "масло"
+    );
 
     museum.addItem(painting);
     museum.addItem(sculpture);
     museum.addItem(artifact);
+    museum.addItem(secondPainting);
 
     Guide guide("Анна");
     guide.addToRoute(painting.get());
-    guide.addToRoute(sculpture.get());
     guide.addToRoute(artifact.get());
+    guide.addToRoute(sculpture.get());
 
     Visitor visitor("Иван");
     visitor.setGuide(&guide);
 
-    std::cout << "1. Композиция:\n";
+    printSection("Информация о музее");
+    museum.showInfo();
+
+    printSection("Залы музея");
     museum.showHalls();
 
-    std::cout << "\n2. Полиморфный вывод информации:\n";
+    printSection("Коллекция экспонатов");
     museum.showCollection();
 
-    std::cout << "\n3. Полиморфный план осмотра:\n";
+    printSection("Полиморфный вывод");
+    std::cout << "Ниже каждый объект обрабатывается через базовый интерфейс MuseumItem:\n";
+    for (const auto& item : museum.getItems()) {
+        showItemThroughBaseInterface(*item);
+        std::cout << '\n';
+    }
+
+    printSection("План осмотра");
     museum.showVisitPlan();
 
-    std::cout << "\n4. Агрегация:\n";
+    printSection("Маршрут экскурсии");
     guide.showRoute();
 
-    std::cout << "\n5. Ассоциация:\n";
+    printSection("Работа гида и посетителя");
     visitor.askGuideName();
 
-    std::cout << "\n6. Делегирование + runtime type information:\n";
-    MuseumItem* found = museum.findItem("Мыслитель");
-    if (found != nullptr) {
-        std::cout << "Найден экспонат через каталог:\n";
-        found->printInfo();
-        showRuntimeType(*found);
-        showSpecialDetails(found);
+    printSection("Поиск через каталог");
+    std::cout << "Музей делегирует поиск экспоната объекту Catalog.\n";
+    const MuseumItem* foundItem = museum.findItem("Мыслитель");
+    if (foundItem != nullptr) {
+        std::cout << "Поиск завершён успешно. Найден объект:\n";
+        foundItem->printInfo();
     } else {
-        std::cout << "Экспонат не найден\n";
+        std::cout << "Экспонат не найден.\n";
     }
+
+    printSection("RTTI и dynamic_cast");
+    if (foundItem != nullptr) {
+        std::cout << "Дополнительная проверка типа нужна только для доступа\n"
+                  << "к данным, которых нет в базовом интерфейсе.\n";
+        showRuntimeType(*foundItem);
+        showSpecialDetails(foundItem);
+    } else {
+        std::cout << "RTTI не демонстрируется, потому что объект для проверки не найден.\n";
+    }
+
+    printSection("Итог");
+    std::cout << "Программа показала композицию, агрегацию, ассоциацию,\n"
+              << "делегирование и полиморфную работу с музейными объектами.\n";
 
     return 0;
 }

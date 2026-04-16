@@ -9,8 +9,8 @@ class MuseumItem;
 
 class Catalog {
 public:
-    MuseumItem* findByTitle(const std::vector<std::shared_ptr<MuseumItem>>& items,
-                           const std::string& neededTitle) const;
+    const MuseumItem* findByTitle(const std::vector<std::shared_ptr<MuseumItem>>& items,
+                                  const std::string& neededTitle) const;
 };
 
 #endif

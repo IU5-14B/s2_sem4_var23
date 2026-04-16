@@ -4,7 +4,7 @@
 Exhibit::Exhibit(const std::string& title, int year, const std::string& author, int hallNumber)
     : MuseumItem(title, year), author(author), hallNumber(hallNumber) {}
 
-std::string Exhibit::getAuthor() const {
+const std::string& Exhibit::getAuthor() const {
     return author;
 }
 
@@ -28,7 +28,7 @@ int Painting::getRecommendedVisitMinutes() const {
     return 15;
 }
 
-std::string Painting::getTechnique() const {
+const std::string& Painting::getTechnique() const {
     return technique;
 }
 
@@ -48,7 +48,7 @@ int Sculpture::getRecommendedVisitMinutes() const {
     return 12;
 }
 
-std::string Sculpture::getMaterial() const {
+const std::string& Sculpture::getMaterial() const {
     return material;
 }
 
@@ -68,6 +68,6 @@ int Artifact::getRecommendedVisitMinutes() const {
     return 10;
 }
 
-std::string Artifact::getEpoch() const {
+const std::string& Artifact::getEpoch() const {
     return epoch;
 }

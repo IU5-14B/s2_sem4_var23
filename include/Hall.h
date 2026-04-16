@@ -11,6 +11,8 @@ private:
 public:
     Hall(int number, const std::string& name);
 
+    int getNumber() const;
+    const std::string& getName() const;
     void printInfo() const;
 };
 

@@ -12,7 +12,7 @@ protected:
 public:
     Exhibit(const std::string& title, int year, const std::string& author, int hallNumber);
 
-    std::string getAuthor() const;
+    const std::string& getAuthor() const;
     int getHallNumber() const;
 };
 
@@ -26,7 +26,7 @@ public:
 
     void printInfo() const override;
     int getRecommendedVisitMinutes() const override;
-    std::string getTechnique() const;
+    const std::string& getTechnique() const;
 };
 
 class Sculpture : public Exhibit {
@@ -39,7 +39,7 @@ public:
 
     void printInfo() const override;
     int getRecommendedVisitMinutes() const override;
-    std::string getMaterial() const;
+    const std::string& getMaterial() const;
 };
 
 class Artifact : public Exhibit {
@@ -52,7 +52,7 @@ public:
 
     void printInfo() const override;
     int getRecommendedVisitMinutes() const override;
-    std::string getEpoch() const;
+    const std::string& getEpoch() const;
 };
 
 #endif

@@ -14,7 +14,7 @@ private:
 public:
     Guide(const std::string& name);
 
-    std::string getName() const;
+    const std::string& getName() const;
     void addToRoute(MuseumItem* item);
     void showRoute() const;
 };

@@ -2,8 +2,8 @@
 #define MUSEUM_H
 
 #include "Catalog.h"
-#include "Exhibit.h"
 #include "Hall.h"
+#include "MuseumItem.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -18,12 +18,18 @@ private:
 public:
     Museum(const std::string& name);
 
+    const std::string& getName() const;
+    std::size_t getHallCount() const;
+    std::size_t getItemCount() const;
+    const std::vector<std::shared_ptr<MuseumItem>>& getItems() const;
+
     void addHall(int number, const std::string& hallName);
     void addItem(const std::shared_ptr<MuseumItem>& item);
+    void showInfo() const;
     void showHalls() const;
     void showCollection() const;
     void showVisitPlan() const;
-    MuseumItem* findItem(const std::string& title) const;
+    const MuseumItem* findItem(const std::string& title) const;
 };
 
 #endif

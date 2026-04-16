@@ -12,7 +12,7 @@ public:
     MuseumItem(const std::string& title, int year);
     virtual ~MuseumItem() = default;
 
-    std::string getTitle() const;
+    const std::string& getTitle() const;
     int getYear() const;
     virtual void printInfo() const = 0;
     virtual int getRecommendedVisitMinutes() const = 0;
